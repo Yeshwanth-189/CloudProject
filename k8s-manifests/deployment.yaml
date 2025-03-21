@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-resnet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-resnet
+  template:
+    metadata:
+      labels:
+        app: fastapi-resnet
+    spec:
+      containers:
+      - name: fastapi-resnet
+        image: yeshn/fastapi-resnet:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: "100m"          # Minimum CPU request
+            memory: "256Mi"      # Minimum Memory request
+          limits:
+            cpu: "2"          # Maximum CPU limit
+            memory: "1Gi"      # Maximum Memory limit
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-resnet-service
+spec:
+  selector:
+    app: fastapi-resnet
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: NodePort
